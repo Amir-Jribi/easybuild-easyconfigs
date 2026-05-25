@@ -1,0 +1,24 @@
+name = 'FFTW'
+version = '3.3.10'
+
+homepage = 'https://www.fftw.org'
+description = """FFTW is a C subroutine library for computing the discrete Fourier transform (DFT)
+in one or more dimensions, of arbitrary input size, and of both real and complex data."""
+
+toolchain = {'name': 'NVHPC', 'version': '23.5-CUDA-12.1.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://www.%(namelower)s.org']
+sources = [SOURCELOWER_TAR_GZ]
+checksums = ['56c932549852cddcfafdab3820b0200c7742675be92179e59e6215b340e26467']
+
+runtest = 'check'
+with_mpi = False
+# AMD EPYC doesnt have avx512 instructions !
+# https://www.amd.com/content/dam/amd/en/documents/epyc-business-docs/white-papers/EPYC-Offers-x86-Compatibility.pdf
+# configopts += '--enable-avx512'
+
+# Does not work with nvc
+with_quad_prec = False
+
+moduleclass = 'numlib'
