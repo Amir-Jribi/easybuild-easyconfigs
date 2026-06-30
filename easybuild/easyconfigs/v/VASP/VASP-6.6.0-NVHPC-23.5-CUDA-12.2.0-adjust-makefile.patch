@@ -1,0 +1,66 @@
+--- arch/makefile.include.nvhpc_acc.orig	2026-03-06 14:40:30.000000000 +0000
++++ arch/makefile.include.nvhpc_acc         2026-04-28 12:16:45.103426000 +0100
+@@ -18,7 +18,7 @@
+ #       to one that comes with your NVIDIA-HPC SDK, and
+ #       the compute capabilities to the ones applicable
+ #       to the hardware you are targeting
+-GPU        ?= -gpu=cc60,cc70,cc80,cc89,cuda12.6
++GPU        = -gpu=cc90,cuda12.1
+ 
+ # For Blackwell (cc100 and above):
+ #   - the CUDA version needs to be 13.0 or higher.
+@@ -69,12 +69,16 @@
+ 
+ # Specify your NV HPC-SDK installation (mandatory)
+ #... first try to set it automatically
+-NVROOT      =$(shell which nvfortran | awk -F /compilers/bin/nvfortran '{ print $$1 }')
++#NVROOT      =$(shell which nvfortran | awk -F /compilers/bin/nvfortran '{ print $$1 }')
+ 
+ # If the above fails, then NVROOT needs to be set manually
+ #NVHPC      ?= /opt/nvidia/hpc_sdk
+ #NVVERSION   = 21.11
+ #NVROOT      = $(NVHPC)/Linux_x86_64/$(NVVERSION)
++NVHPC      ?= ${EBROOTNVHPC}
++NVVERSION   = ${EBVERSIONNVHPC}
++NVROOT      = $(NVHPC)/Linux_x86_64/$(NVVERSION)
++
+ 
+ ## Improves performance when using NV HPC-SDK >=21.11 and CUDA >11.2
+ #OFLAG_IN   = -fast -Mwarperf
+@@ -86,10 +90,10 @@
+ INCS       += -I$(QD)/include/qd
+ 
+ # BLAS (mandatory)
+-BLAS        = -lblas
++BLAS        = -lopenblas
+ 
+ # LAPACK (mandatory)
+-LAPACK      = -llapack
++LAPACK      = -lopenblas
+ 
+ # scaLAPACK (mandatory)
+ SCALAPACK   = -Mscalapack
+@@ -97,7 +101,7 @@
+ LLIBS      += $(SCALAPACK) $(LAPACK) $(BLAS)
+ 
+ # FFTW (mandatory)
+-FFTW_ROOT  ?= /path/to/your/fftw/installation
++FFTW_ROOT  ?= ${EBROOTFFTWMPI}
+ LLIBS      += -L$(FFTW_ROOT)/lib -lfftw3
+ INCS       += -I$(FFTW_ROOT)/include
+ 
+@@ -107,10 +111,10 @@
+ #LLIBS      += -cudalib=cusolvermp,cublasmp -lnvhpcwrapcal
+ 
+ # HDF5-support (optional but strongly recommended, and mandatory for some features)
+-#CPP_OPTIONS+= -DVASP_HDF5
+-#HDF5_ROOT  ?= /path/to/your/hdf5/installation
+-#LLIBS      += -L$(HDF5_ROOT)/lib -lhdf5_fortran
+-#INCS       += -I$(HDF5_ROOT)/include
++CPP_OPTIONS += -DVASP_HDF5
++HDF5_ROOT  ?= ${EBROOTHDF5}
++LLIBS      += -L$(HDF5_ROOT)/lib -lhdf5_fortran
++INCS       += -I$(HDF5_ROOT)/include
+ 
+ # For the VASP-2-Wannier90 interface (optional)
+ #CPP_OPTIONS    += -DVASP2WANNIER90

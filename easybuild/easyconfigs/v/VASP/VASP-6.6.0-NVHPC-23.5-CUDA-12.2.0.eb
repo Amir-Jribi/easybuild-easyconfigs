@@ -1,0 +1,57 @@
+easyblock = 'MakeCp'
+
+name = 'VASP'
+version = '6.6.0'
+
+homepage = 'https://www.vasp.at'
+docurls = 'https://www.vasp.at/wiki/index.php/The_VASP_Manual'
+description = """
+The Vienna Ab initio Simulation Package (VASP) is a local computer program for atomic scale
+materials modelling, e.g. electronic structure calculations and quantum-mechanical molecular dynamics,
+from first principles.
+
+This is a GPU-enabled build.
+
+To use VASP, you need an academic license from University of Vienna.
+Follow the instructions at https://www.vasp.at/index.php/faqs.
+"""
+
+toolchain = {'name': 'NVHPC', 'version': '23.5-CUDA-12.2.0'}
+toolchainopts = {'pic': True}
+
+sources = ['%(namelower)s.%(version)s.tgz']
+patches = ['VASP-%(version)s-NVHPC-23.5-CUDA-12.2.0-adjust-makefile.patch']
+checksums = [
+    {'vasp.%(version)s.tgz': '9566f59b0ae2fc60f670a91153655d09dba13fe6cc6c54e9ca6bd03bbcd86384'},
+    {'VASP-%(version)s-NVHPC-23.5-CUDA-12.2.0-adjust-makefile.patch':
+     'e2480fe22d8be483e36a60a992c822663dee69ff9084ab9f016b319201a1bbbc'},
+]
+
+dependencies = [
+    ('OpenMPI', '4.1.5'),
+    ('FFTW.MPI', '3.3.10', '', ('nvompi', '2023.05')),
+    ('OpenBLAS', '0.3.20'),
+    ('ScaLAPACK', '2.2.0', '', ('nvompi', '2023.05')),
+    ('HDF5', '1.14.0', '-serial'),
+]
+
+prebuildopts = 'cp arch/makefile.include.nvhpc_acc ./makefile.include && '
+
+# VASP uses LIBS as a list of folders
+prebuildopts += 'unset LIBS && '
+
+
+buildopts = 'std gam ncl '
+
+max_parallel = 1
+
+files_to_copy = [(['bin/vasp_std', 'bin/vasp_gam', 'bin/vasp_ncl'], 'bin')]
+
+sanity_check_paths = {
+    'files': ['bin/vasp_std', 'bin/vasp_gam', 'bin/vasp_ncl'],
+    'dirs': []
+}
+
+
+moduleclass = 'chem'
+
