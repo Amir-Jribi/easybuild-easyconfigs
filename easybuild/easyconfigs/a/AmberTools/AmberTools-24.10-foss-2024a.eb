@@ -84,6 +84,17 @@ dependencies = [
     ('RDKit', '2025.03.3'),
     ('PLUMED', '2.9.3'),
 ]
+exts_defaultclass = 'PythonPackage'
+exts_default_options = {
+    'source_urls': [PYPI_SOURCE],
+}
+exts_list =  [
+    ('regex', '2024.9.11'),
+    ('pyasn1', '0.6.1'),
+    ('pytz', '2025.1', {
+        'source_tmpl': SOURCE_WHL,
+    }),
+]
 
 _fe_toolkit_pkgs = ['edgembar', 'ndfes']
 
