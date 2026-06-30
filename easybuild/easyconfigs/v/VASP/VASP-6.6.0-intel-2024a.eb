@@ -1,0 +1,44 @@
+easyblock = 'MakeCp'
+
+name = 'VASP'
+version = '6.6.0'
+
+homepage = 'http://www.vasp.at'
+docurls = 'https://www.vasp.at/wiki/index.php/The_VASP_Manual'
+description = """The Vienna Ab initio Simulation Package (VASP) is a local computer program for atomic scale
+materials modelling, e.g. electronic structure calculations and quantum-mechanical molecular dynamics,
+from first principles."""
+
+toolchain = {'name': 'intel', 'version': '2024a'}
+
+sources = ['%(namelower)s.%(version)s.tgz']
+patches = ['VASP-%(version)s-intel-2024a-adjust-makefile.patch']
+checksums = [
+    {'vasp.%(version)s.tgz': '9566f59b0ae2fc60f670a91153655d09dba13fe6cc6c54e9ca6bd03bbcd86384'},
+    {'VASP-%(version)s-intel-2024a-adjust-makefile.patch': '7acb94de4c7a17fda8418c1fc59e795439c9dc76e139adfd4e13908181e6ddca'},
+]
+
+dependencies = [
+    ('HDF5', '1.14.5'),
+    ('Wannier90', '3.1.0'),
+]
+
+prebuildopts = 'cp arch/makefile.include.oneapi_omp ./makefile.include && '
+
+
+
+# VASP uses LIBS as a list of folders
+prebuildopts += 'unset LIBS && '
+
+buildopts = 'std gam ncl '
+
+max_parallel = 1
+
+files_to_copy = [(['bin/vasp_std', 'bin/vasp_gam', 'bin/vasp_ncl'], 'bin')]
+sanity_check_paths = {
+    'files': ['bin/vasp_std', 'bin/vasp_gam', 'bin/vasp_ncl'],
+    'dirs': []
+}
+
+moduleclass = 'chem'
+

@@ -1,0 +1,31 @@
+--- arch/makefile.include.oneapi_omp.orig	2026-04-28 11:32:56.270284000 +0100
++++ arch/makefile.include.oneapi_omp	2026-04-28 11:33:16.352774000 +0100
+@@ -50,20 +50,20 @@
+ # Intel MKL (FFTW, BLAS, LAPACK, and scaLAPACK)
+ # (Note: for Intel Parallel Studio's MKL use -mkl instead of -qmkl)
+ FCL        += -qmkl
+-MKLROOT    ?= /path/to/your/mkl/installation
++MKLROOT    ?= ${MKLROOT}
+ LLIBS      += -L$(MKLROOT)/lib/intel64 -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64
+ INCS        =-I$(MKLROOT)/include/fftw
+ 
+ # HDF5-support (optional but strongly recommended, and mandatory for some features)
+-#CPP_OPTIONS+= -DVASP_HDF5
+-#HDF5_ROOT  ?= /path/to/your/hdf5/installation
+-#LLIBS      += -L$(HDF5_ROOT)/lib -lhdf5_fortran
+-#INCS       += -I$(HDF5_ROOT)/include
++CPP_OPTIONS += -DVASP_HDF5
++HDF5_ROOT  ?= ${EBROOTHDF5}
++LLIBS      += -L$(HDF5_ROOT)/lib -lhdf5_fortran
++INCS       += -I$(HDF5_ROOT)/include
+ 
+ # For the VASP-2-Wannier90 interface (optional)
+-#CPP_OPTIONS    += -DVASP2WANNIER90
+-#WANNIER90_ROOT ?= /path/to/your/wannier90/installation
+-#LLIBS          += -L$(WANNIER90_ROOT)/lib -lwannier
++CPP_OPTIONS    += -DVASP2WANNIER90
++WANNIER90_ROOT ?= ${EBROOTWANNIER90}
++LLIBS          += -L$(WANNIER90_ROOT)/lib -lwannier
+ 
+ # For the fftlib library (hardly any benefit in combination with MKL's FFTs)
+ #FCL         = mpiifort fftlib.o -qmkl
